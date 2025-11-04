@@ -20,7 +20,7 @@ type Client struct {
 // NewClient starts clangd and initializes the LSP connection
 func NewClient(compileDBPath, rootPath string) (*Client, error) {
 	// Start clangd process
-	cmd := exec.Command("clangd-12",
+	cmd := exec.Command("clangd",
 		"--compile-commands-dir="+compileDBPath,
 		"--background-index",
 		"--log=error",
