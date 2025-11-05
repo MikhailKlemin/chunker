@@ -6,11 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"clangd-parser/internal/parser"
+	"clangd-parser/internal/model"
 )
 
 // WriteJSON writes semantic chunks to a JSON file with pretty formatting
-func WriteJSON(chunks []parser.SemanticChunk, outputPath string) error {
+func WriteJSON(chunks []model.SemanticChunk, outputPath string) error {
 	// Ensure output directory exists
 	dir := filepath.Dir(outputPath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
@@ -32,7 +32,7 @@ func WriteJSON(chunks []parser.SemanticChunk, outputPath string) error {
 }
 
 // WriteJSONCompact writes chunks without indentation (smaller file size)
-func WriteJSONCompact(chunks []parser.SemanticChunk, outputPath string) error {
+func WriteJSONCompact(chunks []model.SemanticChunk, outputPath string) error {
 	dir := filepath.Dir(outputPath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return fmt.Errorf("create output directory: %w", err)
@@ -51,7 +51,7 @@ func WriteJSONCompact(chunks []parser.SemanticChunk, outputPath string) error {
 }
 
 // GetOutputStats returns statistics about the output
-func GetOutputStats(chunks []parser.SemanticChunk) map[string]any {
+func GetOutputStats(chunks []model.SemanticChunk) map[string]any {
 	stats := make(map[string]any)
 
 	// Count by type

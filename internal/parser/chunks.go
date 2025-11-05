@@ -7,33 +7,13 @@ import (
 	"strings"
 
 	"clangd-parser/internal/lsp"
+	"clangd-parser/internal/model"
 )
 
-// SemanticChunk represents a semantic code chunk
-type SemanticChunk struct {
-	Name      string       `json:"name"`
-	Signature string       `json:"signature"`
-	CodeType  string       `json:"code_type"`
-	Docstring string       `json:"docstring"`
-	Line      int          `json:"line"`
-	LineFrom  int          `json:"line_from"`
-	LineTo    int          `json:"line_to"`
-	Context   ChunkContext `json:"context"`
-}
-
-// ChunkContext provides context information for a chunk
-type ChunkContext struct {
-	Module     string `json:"module"`
-	FilePath   string `json:"file_path"`
-	FileName   string `json:"file_name"`
-	StructName string `json:"struct_name,omitempty"`
-	Snippet    string `json:"snippet"`
-}
-
 // ConvertSymbolsToChunks converts LSP symbols to semantic chunks
-func ConvertSymbolsToChunks(symbols []lsp.DocumentSymbol, filePath string) []SemanticChunk {
+func ConvertSymbolsToChunks(symbols []lsp.DocumentSymbol, filePath string) []model.SemanticChunk {
 	fileLines := readFileLines(filePath)
-	var chunks []SemanticChunk
+	var chunks []model.SemanticChunk
 
 	for _, symbol := range symbols {
 		processSymbol(symbol, filePath, fileLines, "", &chunks)
@@ -42,10 +22,10 @@ func ConvertSymbolsToChunks(symbols []lsp.DocumentSymbol, filePath string) []Sem
 	return chunks
 }
 
-func processSymbol(symbol lsp.DocumentSymbol, filePath string, fileLines []string, parentStruct string, chunks *[]SemanticChunk) {
+func processSymbol(symbol lsp.DocumentSymbol, filePath string, fileLines []string, parentStruct string, chunks *[]model.SemanticChunk) {
 	// Extract this symbol if it's a relevant type
 	if shouldExtractSymbol(symbol.Kind) {
-		chunk := SemanticChunk{
+		chunk := model.SemanticChunk{
 			Name:      symbol.Name,
 			Signature: getSignature(symbol),
 			CodeType:  symbolKindToString(symbol.Kind),
@@ -53,7 +33,7 @@ func processSymbol(symbol lsp.DocumentSymbol, filePath string, fileLines []strin
 			Line:      symbol.Range.Start.Line + 1, // LSP is 0-indexed
 			LineFrom:  symbol.Range.Start.Line + 1,
 			LineTo:    symbol.Range.End.Line + 1,
-			Context: ChunkContext{
+			Context: model.ChunkContext{
 				Module:     extractModule(filePath),
 				FilePath:   filePath,
 				FileName:   filepath.Base(filePath),

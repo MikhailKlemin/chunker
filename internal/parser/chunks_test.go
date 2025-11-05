@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"clangd-parser/internal/lsp"
+	"clangd-parser/internal/model"
 )
 
 func TestConvertSymbolsToChunks(t *testing.T) {
@@ -29,7 +30,7 @@ class TestClass {
 public:
     /// Constructor for TestClass
     TestClass() {}
-    
+
     /// A member method
     void memberMethod() {}
 };
@@ -214,7 +215,7 @@ func containsString(s, substr string) bool {
 			len(s) > len(substr)*2))
 }
 
-func findChunkByName(chunks []SemanticChunk, name string) *SemanticChunk {
+func findChunkByName(chunks []model.SemanticChunk, name string) *model.SemanticChunk {
 	for i := range chunks {
 		if chunks[i].Name == name {
 			return &chunks[i]

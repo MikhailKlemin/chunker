@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"clangd-parser/internal/parser"
+	"clangd-parser/internal/model"
 )
 
 func TestWriteJSON(t *testing.T) {
@@ -18,7 +18,7 @@ func TestWriteJSON(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	// Create test chunks
-	chunks := []parser.SemanticChunk{
+	chunks := []model.SemanticChunk{
 		{
 			Name:      "testFunction",
 			Signature: "void testFunction()",
@@ -27,7 +27,7 @@ func TestWriteJSON(t *testing.T) {
 			Line:      10,
 			LineFrom:  10,
 			LineTo:    15,
-			Context: parser.ChunkContext{
+			Context: model.ChunkContext{
 				Module:   "test",
 				FilePath: "/test/file.cpp",
 				FileName: "file.cpp",
@@ -42,7 +42,7 @@ func TestWriteJSON(t *testing.T) {
 			Line:      20,
 			LineFrom:  20,
 			LineTo:    30,
-			Context: parser.ChunkContext{
+			Context: model.ChunkContext{
 				Module:   "test",
 				FilePath: "/test/file.cpp",
 				FileName: "file.cpp",
@@ -69,7 +69,7 @@ func TestWriteJSON(t *testing.T) {
 		t.Fatalf("Failed to read output file: %v", err)
 	}
 
-	var readChunks []parser.SemanticChunk
+	var readChunks []model.SemanticChunk
 	if err := json.Unmarshal(data, &readChunks); err != nil {
 		t.Fatalf("Failed to parse output JSON: %v", err)
 	}
@@ -97,12 +97,12 @@ func TestWriteJSONCompact(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	chunks := []parser.SemanticChunk{
+	chunks := []model.SemanticChunk{
 		{
 			Name:     "func1",
 			CodeType: "Function",
 			Line:     1,
-			Context:  parser.ChunkContext{FilePath: "/test.cpp"},
+			Context:  model.ChunkContext{FilePath: "/test.cpp"},
 		},
 	}
 
@@ -120,7 +120,7 @@ func TestWriteJSONCompact(t *testing.T) {
 	}
 
 	// Verify it's valid JSON
-	var readChunks []parser.SemanticChunk
+	var readChunks []model.SemanticChunk
 	if err := json.Unmarshal(data, &readChunks); err != nil {
 		t.Fatalf("Invalid JSON: %v", err)
 	}
@@ -142,7 +142,7 @@ func TestWriteJSONCompact(t *testing.T) {
 }
 
 func TestGetOutputStats(t *testing.T) {
-	chunks := []parser.SemanticChunk{
+	chunks := []model.SemanticChunk{
 		{Name: "func1", CodeType: "Function", Docstring: "Has docs"},
 		{Name: "func2", CodeType: "Function", Docstring: ""},
 		{Name: "class1", CodeType: "Class", Docstring: "Has docs"},
@@ -184,7 +184,7 @@ func TestWriteJSONEmptyChunks(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	// Empty chunks should produce valid JSON array
-	chunks := []parser.SemanticChunk{}
+	chunks := []model.SemanticChunk{}
 	outputPath := filepath.Join(tmpDir, "empty.json")
 
 	err = WriteJSON(chunks, outputPath)

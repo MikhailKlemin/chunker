@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"clangd-parser/internal/lsp"
+	"clangd-parser/internal/model"
 	"clangd-parser/internal/output"
 	"clangd-parser/internal/parser"
 )
@@ -48,7 +49,7 @@ func main() {
 	// Step 3: Parse symbols and create chunks
 	log.Println("\n→ Step 3: Parsing document symbols...")
 
-	var allChunks []parser.SemanticChunk
+	var allChunks []model.SemanticChunk
 	successCount := 0
 	errorCount := 0
 
